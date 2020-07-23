@@ -12,6 +12,10 @@ from onvif import ONVIFCamera, ONVIFService, ONVIFError
 from onvif.definition import SERVICES
 import os.path
 
+from pprint import pprint as pprint
+
+from collections import OrderedDict
+
 SUPPORTED_SERVICES = SERVICES.keys()
 
 class ThrowingArgumentParser(ArgumentParser):
@@ -19,11 +23,27 @@ class ThrowingArgumentParser(ArgumentParser):
         usage = self.format_usage()
         raise ValueError("%s\n%s" % (message, usage))
 
+
+def odict_to_dict(arg):
+    if isinstance(arg, (tuple, list)):
+        return [odict_to_dict(item) for item in arg]
+
+    if isinstance(arg, OrderedDict):
+        arg = dict(arg)
+
+    if isinstance(arg, dict):
+        for key, value in arg.items():
+            arg[key] = odict_to_dict(value)
+
+    return arg
+
 def success(message):
-    print('True: ' + str(message))
+    print('True: ')
+    pprint(odict_to_dict(message))
 
 def error(message):
-    print('False: ' + str(message))
+    print('False: ')
+    pprint(odict_to_dict(message))
 
 class ONVIFCLI(Cmd):
     prompt = 'ONVIF >>> '
