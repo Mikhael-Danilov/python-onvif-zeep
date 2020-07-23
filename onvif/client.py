@@ -16,6 +16,12 @@ logger = logging.getLogger('onvif')
 logging.basicConfig(level=logging.INFO)
 logging.getLogger('zeep.client').setLevel(logging.CRITICAL)
 
+import zeep
+
+def zeep_pythonvalue(self, xmlvalue):
+    return xmlvalue
+
+zeep.xsd.simple.AnySimpleType.pythonvalue = zeep_pythonvalue
 
 # Ensure methods to raise an ONVIFError Exception
 # when some thing was wrong
